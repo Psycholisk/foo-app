@@ -1,0 +1,63 @@
+.users-list {
+  display: flex;
+  flex-wrap: wrap;
+  list-style-type: none;
+  width: 100%;
+  max-width: 1000px;
+  margin: auto;
+}
+.users-list__load-more {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.users-list__load-more:hover {
+  opacity: 0.9;
+}
+.users-list__load-more__spinner {
+  display: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 100%;
+  border-left: 2px solid black;
+  border-top: 2px solid black;
+  animation-name: spin;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+  animation-fill-mode: forwards;
+  animation-timing-function: linear;
+}
+.users-list__load-more--loading .users-list__load-more__label {
+  display: none;
+}
+.users-list__load-more--loading .users-list__load-more__spinner {
+  display: block;
+}
+.card {
+  padding: 20px 15px 30px;
+  margin: 15px 10px;
+  background: lightslategrey;
+  border-radius: 3px;
+  width: calc((100% / 3) - 20px);
+  min-height: 150px;
+}
+.user__name {
+  border-left: 2px solid black;
+  padding-left: 10px;
+}
+.user__detail {
+  margin-top: 5px;
+  word-wrap: break-word;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

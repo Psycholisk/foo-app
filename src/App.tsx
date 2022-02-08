@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import './App.css'
 
+const PAGE_SIZE = 20
 interface UserInterface {
   id: string
   gender?: 'male' | 'female' | 'non-binary'
@@ -16,43 +17,52 @@ interface UserInterface {
 
 const UserInfo = ({ user }: { user: UserInterface }): JSX.Element => {
   return (
-    <li>
-      <h2>{`${user?.name?.title} ${user?.name?.first} ${user?.name?.last}`}</h2>
-      <p>
+    <li className='card user'>
+      <h2 className='user__name'>{`${user?.name?.title} ${user?.name?.first} ${user?.name?.last}`}</h2>
+      <p className='user__detail'>
         <strong>Gender</strong>: {user?.gender}
       </p>
-      <p>
+      <p className='user__detail'>
         <strong>Email:</strong> {user?.email}
       </p>
-      <p>
+      <p className='user__detail'>
         <strong>Phone number:</strong> {user?.phone}
       </p>
-      <br />
     </li>
   )
 }
 
 const App = () => {
   const [users, setUsers] = useState<UserInterface[]>([])
+  const [isFetching, setIsFetching] = useState(false)
+
+  const fetchUsers = async () => {
+    try {
+      setIsFetching(true)
+      const response = await fetch('https://randomuser.me/api?results=20')
+      setIsFetching(false)
+      const { results } = await response.json()
+      setUsers([...users, ...results.map((user: UserInterface) => ({ ...user, id: uuidv4() }))])
+    } catch (error) {
+      console.log('Could not fetch users', error)
+    }
+  }
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await fetch('https://randomuser.me/api?results=20')
-        const { results } = await response.json()
-        setUsers(results.map((user: UserInterface) => ({ ...user, id: uuidv4() })))
-      } catch (error) {
-        console.log('Could not fetch users', error)
-      }
-    }
     fetchUsers()
   }, [])
 
   return (
-    <ul>
+    <ul className='users-list'>
       {users.map((user: UserInterface) => (
         <UserInfo user={user} key={`user-${user.id}`} />
       ))}
+      <li
+        className={`card users-list__load-more ${isFetching ? 'users-list__load-more--loading' : ''}`}
+        onClick={fetchUsers}>
+        <div className='users-list__load-more__label'>Load more</div>
+        <div className='users-list__load-more__spinner'></div>
+      </li>
     </ul>
   )
 }
